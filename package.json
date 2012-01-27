@@ -5,7 +5,7 @@
     "keywords": [
         "lint"
     ],
-    "version": "0.1.1pre",
+    "version": "0.1.4",
     "author" : "Reid Burke <me@reidburke.com>",
     "contributors": [
         "Douglas Crockford <douglas@crockford.com>",
@@ -17,11 +17,12 @@
     "bin": {
         "jslint": "./bin/jslint.js"
     },
+    "main": "./lib/jslint.js",
     "dependencies": {
         "nopt": "~1.0.0"
     },
     "engines": {
-        "node": ">=0.4.0"
+        "node": ">=0.6.0"
     },
     "directories": {
         "lib": "./lib"
@@ -31,7 +32,7 @@
         "url": "git://github.com/reid/node-jslint.git"
     },
     "bugs": {
-        "web": "https://github.com/reid/node-jslint/issues"
+        "url": "https://github.com/reid/node-jslint/issues"
     },
     "licenses": [
         {
