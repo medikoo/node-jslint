@@ -1,26 +1,32 @@
 #!/usr/bin/env node
 
+var flatten  = require('es5-ext/lib/Array/prototype/flatten');
+var deferred = require('deferred');
 var linter = require("../lib/linter");
 var reporter = require("../lib/reporter");
+var color = require("../lib/color");
 var nopt = require("nopt");
 var fs = require("fs");
+
+var lintPath = deferred.promisify(linter.lintPath);
 
 function commandOptions() {
     'use strict';
     var flags = [
-            'bitwise', 'browser', 'cap', 'confusion', 'continue', 'css',
-            'debug', 'devel', 'eqeq', 'es5', 'evil', 'forin', 'fragment',
-            'newcap', 'node', 'nomen', 'on', 'passfail', 'plusplus',
-            'properties', 'regexp', 'rhino', 'undef', 'unparam',
-            'sloppy', 'sub', 'vars', 'white', 'widget', 'windows',
-            'json', 'color'
-        ],
-        commandOpts = {
-            'indent' : Number,
-            'maxerr' : Number,
-            'maxlen' : Number,
-            'predef' : [String, Array]
-        };
+        'bitwise', 'browser', 'cap', 'confusion', 'continue', 'css',
+        'debug', 'devel', 'eqeq', 'es5', 'evil', 'forin', 'fragment', 'git',
+        'newcap', 'nocache', 'node', 'nomen', 'on', 'passfail', 'plusplus',
+        'properties', 'regexp', 'rhino', 'undef', 'unparam',
+        'sloppy', 'sub', 'vars', 'white', 'widget', 'windows',
+        'json', 'color'
+    ],
+    commandOpts = {
+        'indent' : Number,
+        'limit'  : Number,
+        'maxerr' : Number,
+        'maxlen' : Number,
+        'predef' : [String, Array]
+    };
 
     flags.forEach(function (option) {
         commandOpts[option] = Boolean;
@@ -47,42 +53,23 @@ if (!parsed.argv.remain.length) {
 }
 
 
-// If there are no more files to be processed, exit with the value 1
-// if any of the files contains any lint.
-var maybeExit = (function () {
-    'use strict';
-    var filesLeft = parsed.argv.remain.length,
-        ok = true;
-
-    return function (lint) {
-        filesLeft -= 1;
-        ok = lint.ok && ok;
-
-        if (filesLeft === 0) {
-            // This was the last file.
-            process.exit(ok ? 0 : 1);
-        }
-    };
-}());
-
-
-function lintFile(file) {
-    'use strict';
-    fs.readFile(file, 'utf8', function (err, data) {
-        if (err) {
-            throw err;
-        }
-
-        var lint = linter.lint(data, parsed);
-
-        if (parsed.json) {
-            console.log(JSON.stringify([file, lint.errors]));
-        } else {
-            reporter.report(file, lint, parsed.color);
-        }
-
-        maybeExit(lint);
-    });
+if (!parsed.limit) {
+    parsed.limit = 5;
 }
 
-parsed.argv.remain.forEach(lintFile);
+deferred.map(parsed.argv.remain, function (path) {
+    return lintPath(path, parsed);
+}).invoke(flatten)(function (files) {
+    if (files.length) {
+        files.slice(0, parsed.limit).forEach(function (file) {
+            reporter.report(file.filename, file, parsed.color);
+        });
+        if (files.length > parsed.limit) {
+            console.log(color.bold(color.red("... and more errors in " +
+                (files.length - parsed.limit) + " files.\n")));
+        }
+        process.exit(1);
+    } else {
+        process.exit(0);
+    }
+}).end();
