@@ -49,9 +49,8 @@ function die(why) {
 }
 
 if (!parsed.argv.remain.length) {
-    die("No files specified.");
+    parsed.argv.remain.push('.');
 }
-
 
 if (!parsed.limit) {
     parsed.limit = 5;
