@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict';
+
 var flatten  = require('es5-ext/lib/Array/prototype/flatten');
 var deferred = require('deferred');
 var linter = require("../lib/linter");
@@ -11,7 +13,6 @@ var fs = require("fs");
 var lintPath = deferred.promisify(linter.lintPath);
 
 function commandOptions() {
-    'use strict';
     var flags = [
         'bitwise', 'browser', 'cap', 'confusion', 'continue', 'css',
         'debug', 'devel', 'eqeq', 'es5', 'evil', 'forin', 'fragment', 'git',
