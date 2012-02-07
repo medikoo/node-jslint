@@ -39,15 +39,6 @@ var options = commandOptions();
 
 var parsed = nopt(options);
 
-function die(why) {
-    'use strict';
-    console.warn(why);
-    console.warn("Usage: " + process.argv[1] +
-        " [--" + Object.keys(options).join("] [--") +
-        "] [--] <scriptfile>...");
-    process.exit(1);
-}
-
 if (!parsed.argv.remain.length) {
     parsed.argv.remain.push('.');
 }
