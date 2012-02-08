@@ -61,7 +61,7 @@ deferred.map(parsed.argv.remain, function (path) {
         }
         process.exit(1);
     } else {
-        console.log(color.bold("All ok"));
+        console.log(color.bold("All is") + " " + color.bold(color.green("OK")));
         process.exit(0);
     }
 }).end();
