@@ -1,0 +1,4 @@
+maxlen 90
+eqeq
+nomen
+predef __dirname, console, process
