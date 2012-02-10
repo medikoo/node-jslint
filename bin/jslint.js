@@ -17,7 +17,7 @@ function commandOptions() {
         'bitwise', 'browser', 'cap', 'confusion', 'continue', 'css',
         'debug', 'devel', 'eqeq', 'es5', 'evil', 'forin', 'fragment', 'git',
         'newcap', 'nocache', 'node', 'nomen', 'on', 'passfail', 'plusplus',
-        'properties', 'regexp', 'rhino', 'undef', 'unparam',
+        'properties', 'regexp', 'rhino', 'tabs', 'undef', 'unparam',
         'sloppy', 'sub', 'vars', 'white', 'widget', 'windows',
         'json', 'color'
     ]
