@@ -20,8 +20,8 @@ function commandOptions() {
         'properties', 'regexp', 'rhino', 'undef', 'unparam',
         'sloppy', 'sub', 'vars', 'white', 'widget', 'windows',
         'json', 'color'
-    ],
-    commandOpts = {
+    ]
+      , commandOpts = {
         'indent' : Number,
         'limit'  : Number,
         'maxerr' : Number,
