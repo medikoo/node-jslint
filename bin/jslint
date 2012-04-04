@@ -190,14 +190,18 @@ var fs       = require("fs")
 			+ "valid only when called on directory)"
 	}
 })
-  , argv = opts.argv;
+  , argv = opts.argv
+  , paths = argv._;
 
 if (argv.help) {
 	console.log(opts.help());
 	process.exit(0);
 }
 
-deferred.map(argv._.length ? argv._ : ['.'], function (path) {
+delete argv._;
+delete argv.$0;
+
+deferred.map(paths.length ? paths : ['.'], function (path) {
 	return lintPath(path, argv);
 }).invoke(flatten)(function (files) {
 	if (files.length) {
