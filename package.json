@@ -1,46 +1,50 @@
 {
-    "name": "jslint",
-    "description": "The JavaScript Code Quality Tool",
-    "homepage": "https://github.com/reid/node-jslint",
-    "keywords": [
-        "lint"
-    ],
-    "version": "0.1.4",
-    "author" : "Reid Burke <me@reidburke.com>",
-    "contributors": [
-        "Douglas Crockford <douglas@crockford.com>",
-        "Mikeal Rogers <mikeal.rogers@gmail.com>",
-        "Adam Moore",
-        "Luke Smith <lsmith@yahoo-inc.com>",
-        "Anders Conbere <aconbere@gmail.com>"
-    ],
-    "bin": {
-        "jslint": "./bin/jslint.js"
-    },
-    "main": "./lib/jslint.js",
-    "dependencies": {
-        "nopt": "~1.0.0"
-    },
-    "engines": {
-        "node": ">=0.6.0"
-    },
-    "directories": {
-        "lib": "./lib"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/reid/node-jslint.git"
-    },
-    "bugs": {
-        "url": "https://github.com/reid/node-jslint/issues"
-    },
-    "scripts": {
-        "lint": "node ./bin/jslint.js --color --git"
-    },
-    "licenses": [
-        {
-            "type": "Modified MIT / BSD",
-            "url": "https://github.com/reid/node-jslint/blob/master/LICENSE"
-        }
-    ]
+  "name": "jslint2",
+  "description": "The JavaScript Code Quality Tool",
+  "homepage": "https://github.com/medikoo/node-jslint",
+  "keywords": [
+    "code",
+    "jshint",
+    "jslint",
+    "lint",
+    "linter",
+    "quality",
+    "test",
+    "validation"
+  ],
+  "version": "0.1.0",
+  "author": "Mariusz Nowak <medikoo+jslint@medikoo.com>",
+  "contributors": [
+    "Douglas Crockford <douglas@crockford.com>",
+    "Reid Burke <me@reidburke.com>",
+    "Mikeal Rogers <mikeal.rogers@gmail.com>",
+    "Adam Moore",
+    "Luke Smith <lsmith@yahoo-inc.com>",
+    "Anders Conbere <aconbere@gmail.com>"
+  ],
+  "bin": {
+    "jslint": "./bin/jslint"
+  },
+  "main": "lib/nodelint.js",
+  "dependencies": {
+    "cli-color": "0.1.x",
+    "deferred": "0.4.x",
+    "es5-ext": "git://github.com/medikoo/es5-ext.git",
+    "next": "0.2.x",
+    "optimist": "0.3.x"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/medikoo/node-jslint.git"
+  },
+  "bugs": {
+    "mail": "medikoo+jslint@medikoo.com",
+    "url": "https://github.com/medikoo/node-jslint/issues"
+  },
+  "scripts": {
+    "lint": "node ./bin/jslint.js --color --git"
+  }
 }
