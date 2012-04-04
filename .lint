@@ -2,6 +2,5 @@
 indent 2
 maxlen 80
 eqeq
-nomen
-tabs
-predef __dirname, console, process
+white:commafirstvar
+white:tabs
