@@ -48,7 +48,7 @@ module.exports = function (t) {
 					a.deep(r.predef, ['dwa', 'raz'], "Predef");
 					delete r.predef;
 					a.deep(r,{ adsafe: true, continue: true, css: true, devel: true,
-						es5: true, evil: true, 'eqeq:null': true, indent: 2, maxlen: 60 });
+						evil: true, 'eqeq:null': true, indent: 2, maxlen: 60 });
 				}).end(d);
 		},
 		"Inner root": function (a, d) {
