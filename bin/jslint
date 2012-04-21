@@ -77,7 +77,7 @@ deferred.map(paths.length ? paths : ['.'], function (path) {
 		return files[paths[0]].errors ? 1 : 0
 	}
 
-	index = call.apply(commonLeft, paths) + 1
+	index = call.apply(commonLeft, paths);
 	paths = paths.filter(function (path) {
 		return files[path].errors;
 	});
