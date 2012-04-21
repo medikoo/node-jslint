@@ -1,0 +1,13 @@
+# ./bar
+
+!bitwise
+css
+indent 2
+maxlen 60
+predef+ x,y
+!vars
+!undef
+
+./foo.js
+!tabs
+windows

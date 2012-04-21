@@ -1,6 +1,0 @@
-@root
-indent 2
-maxlen 80
-eqeq
-white:commafirstvar
-white:tabs

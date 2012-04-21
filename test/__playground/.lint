@@ -1,0 +1,31 @@
+# ./
+
+@root
+bitwise
+evil
+eqeq:null
+!forin
+maxlen 70
+predef foo,bar
+
+./foo
+continue
+vars
+!white
+
+./foo/bar
+devel
+
+./foo/bar/foo.js
+!css
+unparam
+undef
+tabs
+!sub
+
+./foo/bar/other
+rhino
+safe
+
+./foo/bar/other/bar.js
+regexp

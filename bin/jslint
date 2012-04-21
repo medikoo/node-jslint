@@ -2,194 +2,50 @@
 
 'use strict';
 
-var fs       = require("fs")
-  , flatten  = require('es5-ext/lib/Array/prototype/flatten')
-  , deferred = require('deferred')
-  , clc      = require('cli-color')
-  , bold     = clc.bold, red = clc.bold.red, green = clc.bold.green
-  , reporter = require("../lib/reporter")
-  , lintPath = deferred.promisify(require("../lib/linter").lintPath)
+var call       = Function.prototype.call
+  , keys       = Object.keys
+  , fs         = require('fs')
+  , resolve    = require('path').resolve
+  , commonLeft = require('es5-ext/lib/Array/prototype/common-left')
+  , flatten    = require('es5-ext/lib/Array/prototype/flatten')
+  , copy       = require('es5-ext/lib/Object/copy')
+  , mapKeys    = require('es5-ext/lib/Object/map-keys')
+  , merge      = require('es5-ext/lib/Object/merge')
+  , deferred   = require('deferred')
+  , clc        = require('cli-color')
+  , bold       = clc.bold, red = clc.bold.red, green = clc.bold.green
+  , reporter   = require("../lib/reporter")
+  , lintPath   = require("../lib/lint-path")
+  , options    = require('../lib/_options-schema')
 
-  , opts = require('optimist').usage("Usage: $0 <options> <paths>...", {
-	adsafe: {
-		boolean: true,
-		description: "if ADsafe rules should be enforced. "
-			+ "See http://www.ADsafe.org/"
-	},
-	bitwise: {
-		boolean: true,
-		description: "if bitwise operators should be allowed"
-	},
-	browser: {
-		boolean: true,
-		description: "if the standard browser globals should be predefined"
-	},
-	cap: {
-		boolean: true,
-		description: "if uppercase HTML should be allowed"
-	},
-	continue: {
-		boolean: true,
-		description: "if the continue statement should be allowed"
-	},
-	css: {
-		boolean: true,
-		description: "if CSS workarounds should be tolerated"
-	},
-	debug: {
-		boolean: true,
-		description: "if debugger statements should be allowed"
-	},
-	devel: {
-		boolean: true,
-		description: "if browser globals that are useful in development "
-			+ "(alert, console etc) should be predefined"
-	},
-	eqeq: {
-		boolean: true,
-		description: "if the == and != operators should be tolerated"
-	},
-	es5: {
-		boolean: true,
-		default: true,
-		description: "if ES5 syntax should be allowed"
-	},
-	evil: {
-		boolean: true,
-		description: "if eval should be allowed"
-	},
-	forin: {
-		boolean: true,
-		description: "if unfiltered for in statements should be allowed"
-	},
-	fragment: {
-		boolean: true,
-		description: "if HTML fragments should be allowed"
-	},
-	indent: {
-		default: 4,
-		description: "The number of spaces used for indentation"
-	},
-	maxerr: {
-		default: 50,
-		description: "The maximum number of warnings (per file) reported"
-	},
-	maxlen: {
-		description: "The maximum number of characters in a line"
-	},
-	newcap: {
-		boolean: true,
-		description: "if Initial Caps with constructor functions is optional"
-	},
-	node: {
-		boolean: true,
-		description: "if Node.js globals should be predefined",
-		default: true
-	},
-	nomen: {
-		boolean: true,
-		default: true,
-		description: "if names should not be checked "
-			+ "for initial or trailing underbars"
-	},
-	on: {
-		boolean: true,
-		description: "if HTML event handlers should be allowed"
-	},
-	passfail: {
-		boolean: true,
-		description: "if the scan should stop on first error (per file)"
-	},
-	plusplus: {
-		boolean: true,
-		description: "if ++ and -- should be allowed"
-	},
-	predef: {
-		description: "Comma separated list of the names of "
-			+ "predefined global variables"
-	},
-	regexp: {
-		boolean: true,
-		description: "if . and [^...] should be allowed in RegExp literals"
-	},
-	rhino: {
-		boolean: true,
-		description: "if the Rhino environment globals should be predefined"
-	},
-	safe: {
-		boolean: true,
-		description: "if the safe subset rules are enforced. "
-			+ "These rules are used by ADsafe."
-	},
-	sloppy: {
-		boolean: true,
-		description: "if the ES5 'use strict'; pragma is not required."
-	},
-	sub: {
-		boolean: true,
-		description: "if subscript notation may be used for expressions better "
-			+ "expressed in dot notation"
-	},
-	undef: {
-		boolean: true,
-		description: "if variables and functions need not be declared before used"
-	},
-	unparam: {
-		boolean: true,
-		description: "if warnings should not be given for unused parameters"
-	},
-	vars: {
-		boolean: true,
-		description: "if multiple var statement per function should be allowed"
-	},
-	white: {
-		boolean: true,
-		description: "if strict whitespace rules should be ignored"
-	},
-	widget: {
-		boolean: true,
-		description: "if the Yahoo Widgets globals should be predefined"
-	},
-	windows: {
-		boolean: true,
-		description: "if the Windows globals should be predefined"
-	},
+  , opts = require('optimist').usage("Usage: $0 <options> <paths>...",
+		merge(copy(options), {
+			color: {
+				boolean: true,
+				default: true,
+				description: "(Non JSLint) Colorize output"
+			},
+			git: {
+				boolean: true,
+				description: "(Non JSLint) Obey .gitignore rules "
+					+ "(only when called on directory)"
+			},
+			help: {
+				boolean: true,
+				desription: "(Non JSLint) Show this help"
+			},
+			maxerrfiles: {
+				default: 5,
+				description: "(Non JSLint) Maximum number of files for "
+					+ "which warnings are reported"
+			},
+			nocache: {
+				boolean: true,
+				description: "(Non JSLint) Whether to cache results (useful when "
+					+ "called repeatedly)"
+			}
+		}))
 
-	module: {
-		boolean: true,
-		description: "(extra) If files are CommonJS/Node.js modules",
-		default: true
-	},
-	tabs: {
-		boolean: true,
-		description: "(extra) If files are indented with tabs"
-	},
-
-	color: {
-		boolean: true,
-		default: true,
-		description: "(Non JSLint) Colorize output"
-	},
-	git: {
-		boolean: true,
-		description: "(Non JSLint) Obey .gitignore rules "
-			+ "(only when called on directory)"
-	},
-	help: {
-		boolean: true,
-		desription: "(Non JSLint) Show this help"
-	},
-	maxerrfiles: {
-		default: 5,
-		description: "(Non JSLint) Maximum number of files for "
-			+ "which warnings are reported"
-	},
-	nocache: {
-		boolean: true,
-		description: "(Non JSLint) Whether to cache results (increases speed, "
-			+ "valid only when called on directory)"
-	}
-})
   , argv = opts.argv
   , paths = argv._;
 
@@ -202,19 +58,44 @@ delete argv._;
 delete argv.$0;
 
 deferred.map(paths.length ? paths : ['.'], function (path) {
-	return lintPath(path, argv);
-}).invoke(flatten)(function (files) {
-	if (files.length) {
-		files.slice(0, argv.maxerrfiles).forEach(function (file) {
-			reporter(file.filename, file, argv.color);
+	path = resolve(path);
+	return lintPath(path, argv).invoke(function () {
+		return mapKeys(this, function (key) {
+			return (key === '.') ? path : resolve(path, key);
 		});
-		if (files.length > argv.maxerrfiles) {
+	});
+}).invoke('reduce', function (all, one) {
+	return merge(all, one);
+}, {})(function (files) {
+	var paths = keys(files), index;
+	if (!paths.length) {
+		console.log('Found no files to lint');
+		return 0;
+	}
+	if (paths.length === 1) {
+		reporter(paths[0], files[paths[0]]);
+		return files[paths[0]].errors ? 1 : 0
+	}
+
+	index = call.apply(commonLeft, paths) + 1
+	paths = paths.filter(function (path) {
+		return files[path].errors;
+	});
+	if (paths.length) {
+		paths.slice(0, argv.maxerrfiles).forEach(function (filename) {
+			reporter(filename.slice(index), files[filename]);
+		});
+		if (paths.length > argv.maxerrfiles) {
 			console.log(red("... and more errors in " +
-				(files.length - argv.maxerrfiles) + " files.\n"));
+				(paths.length - argv.maxerrfiles) + " files.\n"));
 		}
 		return 1;
 	} else {
 		console.log(bold("All is") + " " + green("OK"));
 		return 0;
 	}
-}).end(process.exit, null);
+}).end(function (code) {
+	process.on('exit', function () {
+		process.exit(code);
+	});
+}, null);
