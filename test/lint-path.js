@@ -20,7 +20,7 @@ module.exports = function (t) {
 		"Directory": function (a, d) {
 			t(testDir)(function (r) {
 				var k = keys(r);
-				a(k.length, 4, "Result length");
+				a(k.length, 6, "Result length");
 				k.forEach(function (k, i) {
 					a(r[k].errors && r[k].errors.length, 1, "#" + i + " errors");
 				});

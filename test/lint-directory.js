@@ -10,7 +10,7 @@ module.exports = function (t) {
 		"No options": function (a, d) {
 			t(path)(function (r) {
 				var k = keys(r);
-				a(k.length, 4);
+				a(k.length, 6);
 				k.forEach(function (k, i) {
 					a(r[k].errors && r[k].errors.length, 1, "#" + i + " errors");
 				});
@@ -19,7 +19,7 @@ module.exports = function (t) {
 		"Options": function (a, d) {
 			t(path, { module: true })(function (r) {
 				var k = keys(r);
-				a(k.length, 4);
+				a(k.length, 6);
 				k.forEach(function (k, i) {
 					a(r[k].errors, undefined, "#" + i + " errors");
 				});

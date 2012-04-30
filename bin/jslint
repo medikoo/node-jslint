@@ -15,7 +15,7 @@ var call       = Function.prototype.call
   , clc        = require('cli-color')
   , bold       = clc.bold, red = clc.bold.red, green = clc.bold.green
   , reporter   = require("../lib/reporter")
-  , lintPath   = require("../lib/lint-path")
+  , lintPaths  = require("../lib/lint-paths")
   , options    = require('../lib/_options-schema')
 
   , opts = require('optimist').usage("Usage: $0 <options> <paths>...",
@@ -57,37 +57,31 @@ if (argv.help) {
 delete argv._;
 delete argv.$0;
 
-deferred.map(paths.length ? paths : ['.'], function (path) {
-	path = resolve(path);
-	return lintPath(path, argv).invoke(function () {
-		return mapKeys(this, function (key) {
-			return (key === '.') ? path : resolve(path, key);
-		});
-	});
-}).invoke('reduce', function (all, one) {
-	return merge(all, one);
-}, {})(function (files) {
-	var paths = keys(files), index;
-	if (!paths.length) {
+if (!paths.length) {
+	paths.push('.');
+}
+
+lintPaths(paths, argv)(function (files) {
+	var names = keys(files);
+	if (!names.length) {
 		console.log('Found no files to lint');
 		return 0;
 	}
-	if (paths.length === 1) {
-		reporter(paths[0], files[paths[0]]);
-		return files[paths[0]].errors ? 1 : 0
+	if ((paths.length === 1) && (names.length === 1)) {
+		reporter(names[0], files[names[0]]);
+		return files[names[0]].errors ? 1 : 0;
 	}
 
-	index = call.apply(commonLeft, paths);
-	paths = paths.filter(function (path) {
-		return files[path].errors;
+	names = names.filter(function (name) {
+		return files[name].errors;
 	});
-	if (paths.length) {
-		paths.slice(0, argv.maxerrfiles).forEach(function (filename) {
-			reporter(filename.slice(index), files[filename]);
+	if (names.length) {
+		names.slice(0, argv.maxerrfiles).forEach(function (filename) {
+			reporter(filename, files[filename]);
 		});
-		if (paths.length > argv.maxerrfiles) {
+		if (names.length > argv.maxerrfiles) {
 			console.log(red("... and more errors in " +
-				(paths.length - argv.maxerrfiles) + " files.\n"));
+				(names.length - argv.maxerrfiles) + " files.\n"));
 		}
 		return 1;
 	} else {
