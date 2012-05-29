@@ -29,7 +29,7 @@
   "dependencies": {
     "cli-color": "0.1.x",
     "deferred": "0.4.x",
-    "es5-ext": "git://github.com/medikoo/es5-ext.git",
+    "es5-ext": "0.8.x",
     "next": "0.2.x",
     "optimist": "0.3.x"
   },
