@@ -10,7 +10,7 @@ var call       = Function.prototype.call
   , flatten    = require('es5-ext/lib/Array/prototype/flatten')
   , copy       = require('es5-ext/lib/Object/copy')
   , mapKeys    = require('es5-ext/lib/Object/map-keys')
-  , merge      = require('es5-ext/lib/Object/merge')
+  , extend     = require('es5-ext/lib/Object/extend')
   , deferred   = require('deferred')
   , clc        = require('cli-color')
   , bold       = clc.bold, red = clc.bold.red, green = clc.bold.green
@@ -19,7 +19,7 @@ var call       = Function.prototype.call
   , options    = require('../lib/_options-schema')
 
   , opts = require('optimist').usage("Usage: $0 <options> <paths>...",
-		merge(copy(options), {
+		extend(copy(options), {
 			color: {
 				boolean: true,
 				default: true,
